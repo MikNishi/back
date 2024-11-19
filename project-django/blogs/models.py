@@ -3,6 +3,7 @@ from django.urls import reverse
 
 from ckeditor.fields import RichTextField
 from services.utils import unique_slugify
+from django.utils.html import strip_tags
 
 
 class Category(models.Model):
@@ -38,12 +39,14 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.excerpt:
-            self.excerpt = self.content[:100]
+            self.excerpt = strip_tags(self.content)[:100]
         if not self.slug:
             self.slug = unique_slugify(self, self.name)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
+        if self.slug:
+            return reverse("post_detail_by_slug", kwargs={"slug": self.slug})
         return reverse("post_detail", kwargs={"pk": self.pk})
 
     def __str__(self):

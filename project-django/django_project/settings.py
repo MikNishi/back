@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "blogs",
     "ckeditor",
     "services",
+    'tinymce',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

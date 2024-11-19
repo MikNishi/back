@@ -11,7 +11,8 @@ from django.db.models import Q
 class PostSearchView(ListView):
     model = Post
     template_name = 'post/post_list.html'
-    context_object_name = 'posts'
+    context_object_name = 'post_list'
+    paginate_by = 10
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -39,6 +40,7 @@ class TagListView(ListView):
     model = Post
     template_name = 'post/post_by_tag.html'
     context_object_name = 'posts'
+    paginate_by = 10
 
     def get_queryset(self):
         tag_slug = self.kwargs['slug']
@@ -54,6 +56,7 @@ class CategoryListView(ListView):
     model = Post
     template_name = 'post/post_by_category.html'
     context_object_name = 'posts'
+    paginate_by = 10
 
     def get_queryset(self):
         category_slug = self.kwargs['slug']
@@ -68,7 +71,7 @@ class CategoryListView(ListView):
 class BlogListView(ListView):
     model = Post
     # queryset = Post.objects.order_by('id')
-    paginate_by = 2
+    paginate_by = 10
     template_name = "post/post_list.html"
 
     def get_context_data(self, **kwargs):
@@ -87,7 +90,7 @@ class BlogDetailView(DetailView):
         if slug:
             return get_object_or_404(Post, slug=slug)
         else:
-            return get_object_or_404(Post, id=post_id)
+            return get_object_or_404(Post, pk=post_id)
 
 
 class BlogCreateView(SuccessMessageMixin, CreateView):
@@ -121,7 +124,7 @@ class BlogUpdateView(SuccessMessageMixin, UpdateView):
     model = Post
     template_name = "post/post_edit.html"
     # success_url = reverse_lazy("post_list")
-    fields = ["name", "description", "featured_image"]
+    fields = ["name", "content", 'excerpt', "featured_image", 'slug', 'tags', 'category']
     success_message = "%(name)s успешно обновлен"
 
 
