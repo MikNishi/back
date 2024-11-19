@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Список постов{% endblock title %}
+{% block header %}Список постов{% endblock header %}
+
+{% block content %}
+
+<a href="{% url 'post_new' %}">Создать пост</a>
+
+<form method="GET" action="{% url 'post_search' %}">
+    <input type="text" name="q" placeholder="Поиск по заголовку или описанию">
+    <select name="category">
+        <option value="">Все категории</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Поиск</button>
+</form>
+
+<div class="row">
+    {% for post in post_list %}
+        {% include 'post/post_card.html' with post=post %}
+    {% endfor %}
+</div>
+
+
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock content %}

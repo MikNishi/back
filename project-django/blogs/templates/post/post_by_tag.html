@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Посты по тегу: {{ tag.name }}{% endblock title %}
+{% block header %}Посты по тегу: {{ tag.name }}{% endblock header %}
+
+{% block content %}
+<a href="{% url 'post_new' %}">Создать пост</a>
+
+<div class="row">
+    {% if posts %}
+        {% for post in posts %}
+            <div class="col-md-4"> <!-- 3 карточки в ряд на средних экранах -->
+                <div class="card mb-4">
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.name }}</h5>
+                        <p class="card-text">{{ post.excerpt }}</p>
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Читать дальше</a>
+                        <div>
+                            <a href="{% url 'post_by_category' post.category.slug %}" class="badge bg-secondary">{{ post.category.name }}</a>
+                            {% for tag in post.tags.all %}
+                                <a href="{% url 'post_by_tag' tag.slug %}" class="badge bg-info">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if is_paginated %}
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; первая</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+                {% endif %}
+            {% endif %}
+        </span>
+    </div>
+
+{% else %}
+    <p>Нет постов с этим тегом.</p>
+{% endif %}
+{% endblock content %}
